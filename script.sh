@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-test() {
+tm() {
     local dir="${1:-.}"
 
     if [[ ! -d "$dir" ]]; then
@@ -26,5 +26,3 @@ test() {
         tmux attach-session -t "$name"
     fi
 }
-
-test $1
