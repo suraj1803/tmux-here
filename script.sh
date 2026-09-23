@@ -8,22 +8,37 @@ tm() {
 
         [[ -z "$dir" ]] && return 0
     else
+        if [[ "$1" == "ls" ]]; then
+            local tmux_sessions=$(tmux ls 2>/dev/null | awk -F: '{print $1}')
+            local selected_session=$(echo "$tmux_sessions" | fzf --prompt="Select tmux session> " --height=40% --reverse)
+
+            [[ -z "$selected_session" ]] && return 0
+
+            if [[ -n $TMUX ]]; then
+                tmux switch-client -t "$selected_session"
+            else
+                tmux attach-session -t "$selected_session"
+            fi
+
+            return 0
+        fi
+
         dir="$1"
     fi
 
     if [[ ! -d "$dir" ]]; then
         echo "no such folder $1"
-        return 1;
+        return 1
     fi
 
-    dir=$(realpath "$dir") 
+    dir=$(realpath "$dir")
 
     # For DEBUG
     echo "$dir"
 
     local name=$(basename "$dir")
 
-    # For DEBUG 
+    # For DEBUG
     echo "$name"
 
     tmux has-session -t "$name" 2>/dev/null || tmux new-session -d -s "$name" -c "$dir"
