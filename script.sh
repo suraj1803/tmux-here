@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 
 tm() {
-    local dir="${1:-.}"
+    local dir
+
+    if [[ -z "$1" ]]; then
+        dir=$(find ~ -type d \( -name .git -o -name node_modules -o -name .cache \) -prune -o -type d -print 2>/dev/null | fzf --prompt="Enter directory> " --height=40% --reverse)
+
+        [[ -z "$dir" ]] && return 0
+    else
+        dir="$1"
+    fi
 
     if [[ ! -d "$dir" ]]; then
         echo "no such folder $1"
