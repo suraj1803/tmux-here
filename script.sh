@@ -44,13 +44,7 @@ tm() {
 
     dir=$(realpath "$dir")
 
-    # For DEBUG
-    echo "$dir"
-
     local name=$(basename "$dir")
-
-    # For DEBUG
-    echo "$name"
 
     tmux has-session -t "$name" 2>/dev/null || tmux new-session -d -s "$name" -c "$dir"
 
